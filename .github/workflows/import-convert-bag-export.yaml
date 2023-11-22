@@ -1,0 +1,40 @@
+name: Process and Download Data
+
+on:
+  schedule:
+    # Runs at 00:00 on the 9th day of every month
+    - cron: '0 0 9 * *'
+
+jobs:
+  process_data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14' # Specify the Node.js version
+
+    - name: Download and Process Data
+      run: |
+        # Download the file
+        curl -o lvbag-extract-nl.zip "https://service.pdok.nl/kadaster/adressen/atom/v1_0/downloads/lvbag-extract-nl.zip"
+        
+        # Create a directory and unzip the file
+        mkdir -p data/bag
+        unzip lvbag-extract-nl.zip -d data/bag
+        rm lvbag-extract-nl.zip
+        
+        # Add your processing script here
+        bash $GITHUB_WORKSPACE/convert-data.sh
+
+    - name: Commit and Push Changes
+      run: |
+        git config --global user.name 'Your Name'
+        git config --global user.email 'your-email@example.com'
+        git add .
+        git commit -m "Automated data update"
+        git push
