@@ -2,16 +2,6 @@
 
 # Set the base directory to the GitHub workspace
 base_dir="$GITHUB_WORKSPACE/data/bag"
-download_url="https://service.pdok.nl/kadaster/adressen/atom/v1_0/downloads/lvbag-extract-nl.zip"
-
-# Create the base directory and change to it
-mkdir -p "$base_dir"
-cd "$base_dir" || exit
-
-# Download and unzip the main file
-curl -o lvbag-extract-nl.zip "$download_url"
-unzip lvbag-extract-nl.zip
-rm lvbag-extract-nl.zip
 
 # Function to process each directory
 process_directory() {
